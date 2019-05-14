@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Jonas Malmlöf - TDP001</title>
+		<meta charset="UTF-8">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
+	</head>
+	<body>
+		<header id="main-header">
+			<a href="index.html">
+				<div id="logo">
+				Jonas Malmlöf
+				</div>
+			</a>
+
+			<div id="page-info">
+				<span id="page-title">TDP001</span>
+				<span id="page-desc">Uppgifter.</span>
+			</div>
+		</header>
+		<nav id="main-nav">
+			<div id="left-wrap">
+				<a href="index.html">Home</a>
+				<a href="tdp001.html">TDP001</a>
+        - &nbsp;
+        <a href="tdp001-lab1.html">Lab1</a>
+        <a href="tdp001-network.html">Nätverk</a>
+        <a href="tdp001-terminal.html">Terminal</a>
+			</div>
+		</nav>
+		<main>
+      <h2>TDP001 - Terminalkommandon</h2>
+
+    <h3>1) Hur kan man med grep hitta alla rader med namn (förnamn eller efternamn) som slutar med tecknen "on"?</h3>
+    <p> I terminalen skriver jag:
+    <p id="code"><code>grep 'on ' resultat.txt</code></p>
+    <p>Kommandot 'grep' söker efter den specifierade strängen ('on ') i den specifierade filen. Vi behöver lägga till ett extra mellanslag så att vi bara får ord som <i>slutar</i> med 'on'.
+    
+    <h3>2) Skriv ut de fem första efternamnen som inte avslutas med "son"</h3>
+    <p> Jag börjar med att lyfta ut alla efternamn med kommandot:
+    <p id="code"><code>cut -d ' ' -f 2 resultat.txt</code></p>
+    <p>Med -d delas filen upp efter den karaktär som kommer efter -d (' ', dvs mellanslag i detta fall). -f 2 ger oss det andra segmentet i varje rad, och resultat.txt är filen detta ska göras på.
+    <p>Detta är dock endast hälften av vad vi behöver göra.
+    <p id="code"><code>grep -v 'son'</code></p>
+    <p>-v göra att vi <i>inte</i> får de segment som har 'son' i sig.
+    <p>Ett sista kommando behöver vi dock för att slutföra uppgiften:
+    <p id="code"><code>head -n 5</code></p>
+    <p>head -n gör att vi bara skriver ut de första <i>n</i> raderna. <i>n</i> is detta fall är 5.
+    <p>Var för sig gör dessa kommandon inte så mycket gott. men om vi kan kombinera dem så att de alla körs samtidigt, så skulle de vara starka. nu kan vi därför stolt introducera "|", eller <i>"pipe"</i>.
+    <p id="code"><code>cut -d ' ' -f 2 resultat.txt | grep -v 'son' | head -n 5</code></p>
+    <p>Det är också möjligt att skriva ut det hela till en fil genom att lägga till, på slutet:
+    <p id="code"><code>> filnamn.txt</code></p>
+
+    <h3>3) I mappen /usr/lib finns det flera filer som har namn på formatet xxx.so.d, där xxx är dess namn och d är ett (eller flera separerade med .) heltal. Skriv ut alla dessa filers namn (dvs xxx-delen) till en fil med valfritt namn.</h3>
+    <p>Grep fungerar på vad som helst som returnerar någonting till terminalen. även kommandot 'ls'.
+    <p>Med denna visdom, och de lärdomar vi fick i uppgift två kan vi skriva:
+    <p id=code><code>\ls /usr/lib | grep '.so' | set 's/.so/ /' | cut -d ' ' -f 1 > klart.txt</code></p>
+    <p>vi grepar alla rader som har .so i sig. sedan ändrar vi alla '.so' till ' ' med kommandot 'set'. Sedan klipper vi upp lista i segment separerade av mellanslag, och väljer att visa det första segmentet. Slutligen skickar vi det till filen klart.txt med '> klart.txt'. Raden börjar med '\' för att inte ett alias för ls ska användas ('ls -l' i min dators fall).
+
+    <h3>4) Ge ett kommando som (endast) skriver ut hur många rader i filen som har ett namn som har bokstäverna "an" efter varandra. (Bör bli 7)</h3>
+    <p>Kommandot:
+    <p id="code"><code>grep -i 'an' resultat.txt | wc -l</code></p>
+    <p>Använd 'grep' för att hitta alla rader som har 'an' i sig, vi använder -i för att ignore om det är stora eller små bokstäver (utan detta val får vi bara 4).
+    <p>Sedan använder vi en pipe för att skicka resultatet till wc (word-count) och des valmöjlighet '-l' för att visa hur många rader (eller '(-l)ines') som vi fick.
+    <p>Först tänkte jag använda kommandot:
+    <p id="code"><code>grep -i -c "an" resultat.txt</code></p>
+    <p>Men jag insåg att om det funnits mer än en 'an' per rad hade den raden räknats mer än en gång.
+
+		</main>
+	</body>
+</html>

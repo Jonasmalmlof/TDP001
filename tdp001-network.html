@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Jonas Malmlöf - TDP001</title>
+		<meta charset="UTF-8">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
+	</head>
+	<body>
+		<header id="main-header">
+			<a href="index.html">
+				<div id="logo">
+				Jonas Malmlöf
+				</div>
+			</a>
+
+			<div id="page-info">
+				<span id="page-title">TDP001</span>
+				<span id="page-desc">Uppgifter.</span>
+			</div>
+		</header>
+		<nav id="main-nav">
+			<div id="left-wrap">
+				<a href="index.html">Home</a>
+				<a href="tdp001.html">TDP001</a>
+        - &nbsp;
+        <a href="tdp001-lab1.html">Lab1</a>
+        <a href="tdp001-network.html">Nätverk</a>
+        <a href="tdp001-terminal.html">Terminal</a>
+			</div>
+		</nav>
+		<main>
+      <h2>TDP001 - Nätverk</h2>
+
+      <h3>Tag reda på och beskriv hur du kan automatiskt montera (eng. mount) din hemkatalog på IDAs filsystem under en mapp i ditt linux-system. </h3>
+
+      <p>Jag löste denna uppgift genom att använda programmet 'sshfs', som jag installerade med kommandona:
+      <p id="code"><code>
+          sudo apt-get update<br>
+          sudo apt-get install sshfs
+      </code></p>
+      <p>För att jag inte ska behöva skriva in mitt lösenord varje gång katalogen monteras var jag tvungen att skapa en ssh-key för remote-und.ida.liu.se, med kommandona:
+      <p id="code"><code>
+          ssh-keygen -t rsa<br>
+          ssh-copy-id jonma993@remote-und.ida.liu.se</code></p>
+      <p> Efter detta steg kollade jag att allting fungerade som tänkt genom att försöka logga in på servern:
+      <p id="code"><code>ssh jonma993@remote-und.ida.liu.se</code></p>
+      <p>Jag behövde inte skriva in mitt lösenord, så allting fungerade perfekt.
+      <p>Sedan skapade jag mappen jag vill att servern ska monteras på:
+      <p id="code"><code>mkdir ~/mnt/liu</code></p>
+      <p>Efter det dubbelkollade jag att den skapades på korrekt plats.
+
+      <p>Efter dessa steg finns det två sätt att göra själva monteringen, Ett snabbt sätt som inte alltid fungerar, och ett mer pålitligt sätt som känns... fult (av avsaknad av ett mer beskrivande ord).
+      <p>Det snabba sättet:
+      <p id="code"><code>sudo nano /etc/fstab</code></p>
+      <p>Öppnar terminalens text-editor med skriv-åtkomst för en annars skriv-skyddad fil. I slutet av filen lade jag till, som en rad:
+      <p id="code"><code>sshfs#jonma993@remote-und.ida.liu.se:/home/jonma993/ /home/jonma993/mnt/liu fuse.sshfs idmap=user,reconnect,_netdev,IdentityFile=/home/jonma993/.ssh/id_rsa 0 0</code></p>
+      <p>Dessvärre ledde detta till errormeddelandet: "mount: only root can mount", som jag aldrig lyckades lösa.
+      <p>Istället använde jag det mer pålitliga sättet: Jag skapade ett skript som startas varje gång datorn går igång.
+      <p id="code"><code>
+          #!/bin/bash<br>
+          sleep 15<br>
+          sshfs -o IdentityFile=/home/jonma993/.ssh/id_rsa jonma993@remote-und.ida.liu.se:/home/jonma993/ /home/jonma993/mnt/liu
+      </code></p>
+      <p>Sedan gjorde jag skriptet exekverbart med:
+      <p id="code"><code>chmod u+x autoadd.sh</code></p>
+      <p>Efter detta behövde jag clicka på startmenyn, och söka efter "startup applications" och adda mitt nya skript så att det alltid skulle köras när datorn startades. Klickade på "Add" och valde mitt skript. 
+      <p>Startade om datorn och Voilá! Femton sekunder efter datorn startat monterades mappen på min hårddisk och kan ses som en extra hårddisk eller 'device' om man anävnder Engelska.
+      
+		</main>
+	</body>
+</html>

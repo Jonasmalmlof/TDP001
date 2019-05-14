@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Jonas Malmlöf - TDP001</title>
+		<meta charset="UTF-8">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
+	</head>
+	<body>
+		<header id="main-header">
+			<a href="index.html">
+				<div id="logo">
+				Jonas Malmlöf
+				</div>
+			</a>
+
+			<div id="page-info">
+				<span id="page-title">TDP001</span>
+				<span id="page-desc">Uppgifter.</span>
+			</div>
+		</header>
+		<nav id="main-nav">
+			<div id="left-wrap">
+				<a href="index.html">Home</a>
+				<a href="tdp001.html">TDP001</a>
+        - &nbsp;
+        <a href="tdp001-lab1.html">Lab1</a>
+        <a href="tdp001-network.html">Nätverk</a>
+        <a href="tdp001-terminal.html">Terminal</a>
+			</div>
+		</nav>
+		<main>
+
+          <h2>TDP001 - labb 1</h2>
+<p>På länken <a href="http://www.ida.liu.se/~TDP001/material/resultat.txt" target=new>http://www.ida.liu.se/~TDP001/material/resultat.txt</a> finns den datamängd som ska behandlas. Varje person i denna fil har ett antal heltal som representerar deras poäng för tre olika uppgifter. Din uppgift är att summera dessa poäng och skriva ut resultatet sorterat i sjunkande ordning på formatet [poängsumma] [namn]. För den givna filen bör alltså resultatet bli detta:
+
+<p>50 Göran Johansson
+<br>48 Josefine Carlson
+<br>...
+<br>23 Britt Lidell
+<br>22 Klas Hägglund
+<br>11 Jerker Leo
+
+<h3>Lösning:</h3>
+<p>Delade upp filen i två. En för namn med:
+<p id=code><code>$ cut -d ' ' -f 1-2 resultat.txt > namn.txt</code>
+<p>och sedan en med poängen med:
+<p id=code><code>$ cut -d ' ' -f 3- resultat.txt > poang.txt</code>
+<p> <b>cut</b> delar up en fil efter den regel man väljer efter <b>-d</b> (mellanslag i detta fall). De fält som väljs bestäms med <b>-f</b> (1 (förnamn) och 2 (efternamn) i det första fallet. 3 och efter i det andra fallet).
+<p>Efter detta skapade jag ett bash-skript kallat <b>summa.sh</b> som summerade alla talen på varje rad i poang.txt:
+<p id=code><code>#!/bin/bash<BR>
+while read i;<BR>
+do<BR>
+&nbsp; declare -i sum=0<BR>
+&nbsp; for num in $i<BR>
+&nbsp; &nbsp; do<BR>
+&nbsp; &nbsp; &nbsp; sum+=$num<BR>
+&nbsp; &nbsp; done<BR>
+&nbsp; &nbsp; echo "$sum"<BR>
+done < $1</code></p>
+<!-- I know using &nbsp; isn't "beautiful". Alas, <pre> doesn't work in a <p>aragraph. -->
+<p> För att sedan kunna köra <b>summa.sh</b> så behövde jag göra det exekverbart med:
+<p id=code><code>chmod u+x summa.sh</code></p>
+<p>Efter detta, körde jag skriptet med:
+<p id=code><code>./summa.sh poang.txt > sum_poang.txt</code>
+<p>Sedan lade jag ihop filerna och sorterade resultatet med kommandot:
+<p id=code><code>paste -d " " sum_poang.txt namn.txt | sort -n -r </code></p>
+
+
+		</main>
+	</body>
+</html>
